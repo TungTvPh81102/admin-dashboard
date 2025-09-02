@@ -3,9 +3,11 @@ import { db } from "../firebase/firebaseConfig";
 import { message, Button, Table, Modal, Form, Input, Select } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "firebase/firestore";
+import { roleService } from "../services/role-service";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [form] = Form.useForm();
@@ -16,13 +18,32 @@ const Users = () => {
       setUsers(JSON.parse(storedUsers));
     }
 
-    const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
+    // Load users
+    const unsubscribeUsers = onSnapshot(collection(db, "users"), (snapshot) => {
       const userList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setUsers(userList);
       localStorage.setItem("users", JSON.stringify(userList));
     });
 
-    return () => unsubscribe();
+    // Load roles
+    const loadRoles = async () => {
+      try {
+        const roleOptions = await roleService.getRolesForSelect();
+        setRoles(roleOptions);
+      } catch (error) {
+        console.error("Error loading roles:", error);
+        // Fallback to default roles if service fails
+        setRoles([
+          { value: "admin", label: "Admin" },
+          { value: "user", label: "User" },
+          { value: "moderator", label: "Moderator" },
+        ]);
+      }
+    };
+
+    loadRoles();
+
+    return () => unsubscribeUsers();
   }, []);
 
   const handleAddOrUpdateUser = async (values) => {
@@ -98,10 +119,12 @@ const Users = () => {
             <Input type="email" />
           </Form.Item>
           <Form.Item name="role" label="Vai trò" rules={[{ required: true, message: "Vui lòng chọn vai trò!" }]}> 
-            <Select>
-              <Select.Option value="admin">Admin</Select.Option>
-              <Select.Option value="user">User</Select.Option>
-              <Select.Option value="moderator">Moderator</Select.Option>
+            <Select placeholder="Chọn vai trò">
+              {roles.map((role) => (
+                <Select.Option key={role.value} value={role.value}>
+                  {role.label}
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
         </Form>

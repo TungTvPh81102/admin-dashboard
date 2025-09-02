@@ -2,6 +2,11 @@
     "products": [
       { "id": 1, "name": "Nike Air Force 1", "price": "$120", "category": "Shoes", "status": "Available", "hidden": false },
       { "id": 2, "name": "Adidas Ultraboost", "price": "$180", "category": "Shoes", "status": "Out of Stock", "hidden": false }
+    ],
+    "roles": [
+      { "id": 1, "name": "Admin", "description": "Quản trị viên hệ thống", "permissions": ["read", "write", "delete", "manage_users"], "status": "active" },
+      { "id": 2, "name": "User", "description": "Người dùng thông thường", "permissions": ["read"], "status": "active" },
+      { "id": 3, "name": "Moderator", "description": "Người kiểm duyệt", "permissions": ["read", "write"], "status": "active" }
     ]
   }
   

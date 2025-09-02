@@ -22,6 +22,7 @@ import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Orders from "./pages/Orders";
 import Users from "./pages/Users";
+import Roles from "./pages/Roles";
 import Login from "./pages/Login";
 import Statistics from "./pages/Statistics";
 import GiftCards from "./pages/GiftCards";
@@ -61,8 +62,11 @@ const menuItems = [
   {
     key: "5",
     icon: <UserOutlined />,
-    path: "/users",
     label: "Quản lý tài khoản",
+    children: [
+      { key: "5.1", path: "/users", label: "Người dùng" },
+      { key: "5.2", path: "/roles", label: "Vai trò" },
+    ],
   },
   {
     key: "6",
@@ -205,6 +209,7 @@ const App = () => {
                         <Route path="/orders" element={<Orders />} />
                         <Route path="/categories" element={<Category />} />
                         <Route path="/users" element={<Users />} />
+                        <Route path="/roles" element={<Roles />} />
                         <Route path="/gift-cards" element={<GiftCards />} />
                         <Route path="/statistics" element={<Statistics />} />
                         <Route path="/attributes" element={<Attribute />} />
